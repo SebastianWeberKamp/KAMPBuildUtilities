@@ -1,0 +1,5 @@
+	<parent>
+		<groupId>edu.kit.ipd.sdq.kamp</groupId>
+		<artifactId>bundles</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+	</parent>
