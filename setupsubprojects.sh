@@ -6,27 +6,6 @@ testsdir="${travisworkingdir}SebastianWeberKamp/KAMP/tests"
 featuresdir="${travisworkingdir}SebastianWeberKamp/KAMP/features"
 updatesitedir="${travisworkingdir}SebastianWeberKamp/KAMP/releng/edu.kit.ipd.sdq.kamp.updatesite"
 
-############Done by travis###############
-
-#Delete the working directory of travis = reset project
-rm -rfv $travisworkingdir
-
-#Clone the core project
-git clone "https://SebastianWeberKamp:H6r3D8J2w9lc1Gp@github.com/SebastianWeberKamp/KAMP.git" "${travisworkingdir}SebastianWeberKamp/KAMP"
-
-#Delete former downloaded sources
-#for arg; do
-#localgit="${travisworkingdir}$(cut -d' ' -f 2 <<< $arg)"
-#echo "Deleting $localgit"
-#rm -rf $localgit
-#done
-
-#git clone --depth 1 "https://github.com/kit-sdq/BuildUtilities.git" "/tmp/BuildUtilities"
-. /tmp/BuildUtilities/travis-ci/setupenvironment.sh
-
-###########End Done by travis#############
-
-
 ########################
 #Clone every subproject#
 ########################
@@ -43,7 +22,7 @@ done
 for arg; do
 localgit="${travisworkingdir}$(cut -d' ' -f 2 <<< $arg)"
 for dir in $(find $localgit -mindepth 1 -maxdepth 1 -type d -path "*.tests"); do
-#echo "Moving $dir to $testsdir"
+echo "Moving $dir to $testsdir"
 mv $dir $testsdir
 done
 done
@@ -68,7 +47,6 @@ if [ "$folder" != ".git" ]; then
 echo -e "\t\t<plugin\n\t\tid=\"$folder\"\n\t\t download-size=\"0\"\n\t\t install-size=\"0\"\n\t\t version=\"0.0.0\"\n\t\t unpack=\"false\"/>" >> "${featuresdir}/${featurefolder}/feature.xml"
 fi
 done
-###################################
 echo -n -e "</feature>\n" >> "${featuresdir}/${featurefolder}/feature.xml"
 #Print the file to check the result manually
 #cat "${featuresdir}/${featurefolder}/feature.xml"
@@ -96,8 +74,6 @@ fi
 done
 echo -n -e "\t </modules>" >> ${subprojectdir}/pom.xml
 echo -n -e "\t </project>" >> ${subprojectdir}/pom.xml
-#Print the file to check the result manually
-cat ${subprojectdir}/pom.xml > ${subprojectlabel}Pom
 done
 
 ############################################
@@ -112,10 +88,6 @@ echo -n -e "\t<feature url=\"features/${folder}_1.0.0.qualifier.jar\" id=\"${fol
 done
 cat FileStubs/Category-Defs >> ${updatesitedir}/category.xml
 echo -n -e "</site>\n" >> ${updatesitedir}/category.xml
-#Print the file to check the result manually
-#cat ${updatesitedir}/category.xml
-
-
 
 ##################################
 #Create the pom.xml for the tests#
@@ -132,8 +104,6 @@ folder=$(basename "$testdir")
 echo -e "\t\t<module>$folder</module>" >> ${testsdir}/pom.xml
 done
 echo -e "\t</modules>\n</project>" >> ${testsdir}/pom.xml
-#Print the file to check the result manually
-#cat ${testsdir}/pom.xml
 
 #####################################
 #Create the pom.xml for the features#
@@ -150,8 +120,3 @@ folder=$(basename "$featuredir")
 echo -e "\t\t<module>$folder</module>" >> ${featuresdir}/pom.xml
 done
 echo -e "\t</modules>\n</project>" >> ${featuresdir}/pom.xml
-#Print the file to check the result manually
-#cat ${featuresdir}/pom.xml
-
-cd /home/travis/build/SebastianWeberKamp/KAMP
-mvn -X clean verify > /home/ubuntu/KAMPBuildUtilities/Output.txt
